@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar,ActivityIndicator,Button,Alert,TouchableOpacity  } from 'react-native';
 import { MaterialCommunityIcons, MaterialIcons,Entypo,FontAwesome    } from '@expo/vector-icons';
-
+import moment from "moment";
 const userId = "5e1a26d5-8677-4903-ea84-08d925b7d737"
 function PressHandelerFollowMatch(id){
     fetch("https://localhost:5001/api/UserGames",{
@@ -50,15 +50,23 @@ function PressHandelerFollowTeam(id){
 }
 const _renderItemMatches = ({ item }) => {
     const { PressHandelerMatches} = item;
+    console.log(item)
     return(
         <TouchableOpacity>
-            <View style={styles.item} onPress={PressHandelerMatches}>
-                <Text>{item.Datum}</Text>
-                <Text>{item.Teams[0]}</Text>
-                <Text>{item.Teams[1]}</Text>
-                <Text>{item.Tornooi}</Text>
-                <Text>{item.GameTitle}</Text>
-                <Text>{item.Score}0 : 0</Text>
+            <View style={styles.matchen} onPress={PressHandelerMatches}>
+                <View>
+                    <Text style={styles.matchenTextDatum}>{item.Datum}</Text>
+                </View>
+                <View style={styles.matchenTeam}>
+                    <Text style={[styles.matchenText,styles.matchenTeam1]}>{item.Teams[0]}</Text>
+                    <Text style={styles.matchenTextScore}>{item.Score} 0 - 0 </Text>
+                    <Text style={[styles.matchenText,styles.matchenTeam2]}>{item.Teams[1]}</Text>
+                </View>
+                <View>
+                    <Text style={styles.matchenInfo}>{item.Tornooi}</Text>
+                    <Text style={styles.matchenInfo}>{item.Naam}</Text>
+                </View>
+                
                 <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerFollowMatch(item.Id)}}/>
             </View>
         </TouchableOpacity>
@@ -69,11 +77,12 @@ const _renderItemGames = ({ item }) => {
     
     return(
         <TouchableOpacity onPress={() => console.log('pres ')}>
-            <View style={styles.item} >
-                <Text>{item.Naam}</Text>
-                <Text>{item.Uitgever}</Text>
-                <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerFollowGame(item.Id)}}/>
-
+            <View style={styles.Games} >
+                <View style={styles.GamesGegevens}>
+                    <Text style={styles.Naam}>{item.Naam}</Text>
+                    <Text style={styles.Uitgever}>{item.Uitgever}</Text>
+                </View>
+                <Entypo  style={styles.HeartGame} name="heart" size={24} color="black" onPress={()=>{PressHandelerFollowGame(item.Id)}}/>
             </View>
         </TouchableOpacity>
     )
@@ -82,9 +91,10 @@ const _renderItemTeams = ({ item }) => {
     
     return(
         <TouchableOpacity onPress={() => console.log('pres ')}>
-            <View style={styles.item} >
-                <Text>{item.Naam}</Text>
-                <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerFollowTeam(item.Id)}}/>            </View>
+            <View style={styles.team} >
+                <Text style={styles.teamNaam}>{item.Naam}</Text>
+                <Entypo style={styles.HeartTeam} name="heart" size={24} color="black" onPress={()=>{PressHandelerFollowTeam(item.Id)}}/>
+            </View>
         </TouchableOpacity>
     )
 };
@@ -92,10 +102,14 @@ const _renderItemTornooien = ({ item }) => {
     
     return(
         <TouchableOpacity onPress={() => console.log('pres ')}>
-            <View style={styles.item} >
-                <Text>{item.Naam}</Text>
-                <Text>{item.Organisator}</Text>
-                <Text>{item.Beschrijving}</Text>
+            <View style={styles.tornooi}>
+                <View style={styles.tornooiGegevens}>
+                    <Text style={styles.tornooiGegevensBoldNaam}>{item.Naam}</Text>
+                    <Text style={styles.tornooiGegevensBold}>Organisator: </Text>
+                    <Text style={styles.tornooiBeschrijving}>{item.Organisator}</Text>
+                </View>
+                <Text style={styles.tornooiBeschrijvingBold}>Beschrijving: </Text>
+                <Text style={styles.tornooiBeschrijving}>{item.Beschrijving}</Text>
             </View>
         </TouchableOpacity>
     )
@@ -104,10 +118,7 @@ const AllButtons = ( props ) => {
     const { GetDataMatchen,GetDataTeams,GetDataGames,GetDataTornooien } = props;
     return(
         <View style={styles.buttons}>
-            <Button style={{
-                height:5,
-                with:5
-            }}
+            <Button style={styles.button}
                 title="Matchen"
                 onPress={GetDataMatchen}
                 />
@@ -152,7 +163,6 @@ class ApiContainer extends Component {
                     if(element.UserId == userId){
                         let joined = this.state.followedGames.concat(element.GameTitleId);
                         this.setState({ followedGames: joined });
-                        console.log(this.state.FollowedGames)
                     }
                 });
             })
@@ -175,8 +185,8 @@ class ApiContainer extends Component {
         .then(response => response.json())
         .then((responseJson) => {
             responseJson.UserGames.forEach(element => {
+                element.Datum = moment(element.Datum).format('MMM Do YYYY h:mm:ss a');
                 if(element.UserId == userId){
-                    console.log('in',element.UserId)
                     let joined = this.state.followedMatchen.concat(element.GameId);
                     this.setState({ followedMatchen: joined })
                 }
@@ -197,6 +207,9 @@ class ApiContainer extends Component {
         fetch("https://localhost:5001/api/Games")
             .then(response => response.json())
             .then((responseJson) => {
+                responseJson.Games.forEach(element=>{
+                    element.Datum = moment(element.Datum).format('MMM Do YYYY h:mm:ss a');
+                })
                 this.setState({
                     loading: false,
                     dataMatchen: responseJson,
@@ -266,7 +279,6 @@ class ApiContainer extends Component {
             );
         }else{
             if(this.state.currentSelected=="Matchen"){
-                console.log(this.state.followedMatchen)
                 return (
                     <SafeAreaView style={styles.container}>
                         <AllButtons GetDataMatchen={this.GetDataMatchen}
@@ -355,13 +367,129 @@ const styles = StyleSheet.create({
     tornooi: {
       fontSize: 32,
     },
+    buttons:{
+        padding:0,
+        margin:5,
+        marginTop:10,
+        flexDirection:'row',
+        justifyContent: 'space-around',
+        
+       alignItems:'center',
+    },
     button:{
+        marginTop: 20,
+        width: 150,
+        height: 150,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        borderRadius: 100,
+        backgroundColor: '#ccc',
+    },
+    matchen:{
+        backgroundColor: 'lightgrey',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+        alignItems:'center',
+    },
+    matchenText:{
+        fontSize:18,
+        width:110,
+        textAlign:'center'
+    },
+    matchenTextDatum:{
+        fontSize:18,
+        fontWeight: "bold",
+    },
+    matchenTextScore:{
+        fontSize:18,
+        fontWeight: "bold",
+    },
+    matchenTeam:{
+        flexDirection:'row',
+        justifyContent:'center',
+        marginTop:10,
+
+    },
+    matchenTeam1:{
+        textAlign:'right',
+    },
+    matchenTeam2:{
+        textAlign:'left',
+    },
+    matchenInfo:{
+        marginTop:10,
+        textAlign:'center'
+    },
+
+
+    Games:{
+        fontSize:18,
+        backgroundColor: 'lightgrey',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+        flexDirection:'row',
+
+    },
+    Naam:{
+        fontWeight: "bold",
+    },
+    HeartGame:{
+        alignSelf:"center"
+    },
+    GamesGegevens:{
+        alignContent:'column',
+        width:"90%",
+
+    },
+
+
+    team:{
+        fontSize:18,
+        backgroundColor: 'lightgrey',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+        flexDirection:'row',
+        alignItems:"flex-end"
         
     },
-    buttons:{
-        backgroundColor: 'white',
-        borderColor: 'blue',
-        borderWidth: 1,
-    }
+    teamNaam:{
+        fontWeight: "bold",
+        alignSelf:"center",
+        width:"90%"
+    },
+    HeartTeam:{
+        alignSelf:"center",
+    },
+
+
+    tornooi:{
+        fontSize:18,
+        backgroundColor: 'lightgrey',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    tonooiBeschrijving:{
+        fontWeight:"normal"
+    },
+    tornooiBeschrijvingBold:{
+        fontWeight: "bold",
+    },
+    tornooiGegevens:{
+        fontWeight:"normal"
+
+    },
+    tornooiGegevensBold:{
+        alignContent:'column',
+        width:"90%",
+        fontWeight: "bold",
+    },
+    tornooiGegevensBoldNaam:{
+        fontSize:22,
+    },
 });
   

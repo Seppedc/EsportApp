@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar,ActivityIndicator,Button,Alert,TouchableOpacity  } from 'react-native';
 import { MaterialCommunityIcons, MaterialIcons,Entypo,FontAwesome    } from '@expo/vector-icons';
+import moment from "moment";
 
 const userId = "5e1a26d5-8677-4903-ea84-08d925b7d737"
 
@@ -39,16 +40,23 @@ const _renderItemMatches = ({ item }) => {
         console.log(item)
         return(
             <TouchableOpacity>
-                <View style={styles.item} onPress={() => console.log('pres ')}>
-                <Text>{item.Datum}</Text>
-                    <Text>{item.Teams[0]}</Text>
-                    <Text>{item.Teams[1]}</Text>
-                    <Text>{item.Tornooi}</Text>
-                    <Text>{item.GameTitle}</Text>
-                    <Text>{item.Score}0 : 0</Text>
-                    <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowMatch(item.UserGameId)}}/>
+            <View style={styles.matchen} onPress={() => console.log('pres ')}>
+                <View>
+                    <Text style={styles.matchenTextDatum}>{item.Datum}</Text>
                 </View>
-            </TouchableOpacity>
+                <View style={styles.matchenTeam}>
+                    <Text style={[styles.matchenText,styles.matchenTeam1]}>{item.Teams[0]}</Text>
+                    <Text style={styles.matchenTextScore}>{item.Score} 0 - 0 </Text>
+                    <Text style={[styles.matchenText,styles.matchenTeam2]}>{item.Teams[1]}</Text>
+                </View>
+                <View>
+                    <Text style={styles.matchenInfo}>{item.Tornooi}</Text>
+                    <Text style={styles.matchenInfo}>{item.Naam}</Text>
+                </View>
+                
+                <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowMatch(item.UserGameId)}}/>
+            </View>
+        </TouchableOpacity>
         )
     }else{
         return(<Text>Nog geen gevolgde matchen</Text>)
@@ -59,12 +67,13 @@ const _renderItemGames = ({ item }) => {
     if(item){
         return(
             <TouchableOpacity onPress={() => console.log('pres ')}>
-                <View style={styles.item} >
-                    <Text>{item.Naam}</Text>
-                    <Text>{item.Uitgever}</Text>
-                    <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowGame(item.Id)}}/>
+            <View style={styles.Games} >
+                <View style={styles.GamesGegevens}>
+                    <Text style={styles.Naam}>{item.Naam}</Text>
                 </View>
-            </TouchableOpacity>
+                <Entypo  style={styles.HeartGame} name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowGame(item.Id)}}/>
+            </View>
+        </TouchableOpacity>
         )
     }else{
         return(<Text>Nog geen gevolgde games</Text>)
@@ -76,9 +85,9 @@ const _renderItemTeams = ({ item }) => {
         console.log(item)
         return(
             <TouchableOpacity onPress={() => console.log('pres ')}>
-                <View style={styles.item} >
-                    <Text>{item.Naam}</Text>
-                    <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowTeam(item.Id)}}/>
+                <View style={styles.team} >
+                    <Text style={styles.teamNaam}>{item.Naam}</Text>
+                    <Entypo style={styles.HeartTeam} name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowTeam(item.Id)}}/>
                 </View>
             </TouchableOpacity>
         )
@@ -90,16 +99,16 @@ const _renderItemTeams = ({ item }) => {
 const AllButtons = ( props ) => {
     const { GetDataMatchen,GetDataTeams,GetDataGames } = props;
     return(
-        <View style={styles.item}>
-            <Button
+        <View style={styles.buttons}>
+            <Button style={styles.button}
                 title="Matchen"
                 onPress={GetDataMatchen}
             />
-            <Button
+            <Button style={styles.button}
                 title="Games"
                 onPress={GetDataGames}
             />
-            <Button
+            <Button style={styles.button}
                 title="Teams"
                 onPress={GetDataTeams}
             />
@@ -122,6 +131,7 @@ class ApiContainer extends Component {
         fetch("https://localhost:5001/api/Games/"+GameId)
         .then(response => response.json())
         .then((responseJson) => {
+            responseJson.Datum = moment(responseJson.Datum).format('MMM Do YYYY h:mm:ss a');
             var test = responseJson;
             test["UserGameId"] = id;
             var joined = this.state.dataMatchen.concat(test);
@@ -138,6 +148,7 @@ class ApiContainer extends Component {
             .then(response => response.json())
             .then((responseJson) => {
                 responseJson.UserGames.forEach(element => {
+                    element.Datum = moment(element.Datum).format('MMM Do YYYY h:mm:ss a');
                     this.GetMatch(element.GameId,element.Id);
                 });
                 this.setState({
@@ -309,6 +320,102 @@ const styles = StyleSheet.create({
     },
     tornooi: {
       fontSize: 32,
+    },
+    buttons:{
+        padding:0,
+        margin:5,
+        marginTop:10,
+        flexDirection:'row',
+        justifyContent: 'space-around',
+        
+       alignItems:'center',
+    },
+    button:{
+        marginTop: 20,
+        width: 150,
+        height: 150,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        borderRadius: 100,
+        backgroundColor: '#ccc',
+    },
+    matchen:{
+        backgroundColor: 'lightgrey',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+        alignItems:'center',
+    },
+    matchenText:{
+        fontSize:18,
+        width:110,
+        textAlign:'center'
+    },
+    matchenTextDatum:{
+        fontSize:18,
+        fontWeight: "bold",
+    },
+    matchenTextScore:{
+        fontSize:18,
+        fontWeight: "bold",
+    },
+    matchenTeam:{
+        flexDirection:'row',
+        justifyContent:'center',
+        marginTop:10,
+
+    },
+    matchenTeam1:{
+        textAlign:'right',
+    },
+    matchenTeam2:{
+        textAlign:'left',
+    },
+    matchenInfo:{
+        marginTop:10,
+        textAlign:'center'
+    },
+
+
+    Games:{
+        fontSize:18,
+        backgroundColor: 'lightgrey',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+        flexDirection:'row',
+
+    },
+    Naam:{
+        fontWeight: "bold",
+    },
+    HeartGame:{
+        alignSelf:"center"
+    },
+    GamesGegevens:{
+        alignContent:'column',
+        width:"90%",
+
+    },
+
+    team:{
+        fontSize:18,
+        backgroundColor: 'lightgrey',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+        flexDirection:'row',
+        alignItems:"flex-end"
+        
+    },
+    teamNaam:{
+        fontWeight: "bold",
+        alignSelf:"center",
+        width:"90%"
+    },
+    HeartTeam:{
+        alignSelf:"center",
     },
 });
   
