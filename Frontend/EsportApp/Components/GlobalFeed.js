@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar,ActivityIndicator,Button,Alert,TouchableOpacity  } from 'react-native';
 import { MaterialCommunityIcons, MaterialIcons,Entypo,FontAwesome    } from '@expo/vector-icons';
 import moment from "moment";
-const userId = "5e1a26d5-8677-4903-ea84-08d925b7d737"
+const userId = "84f9f434-16b3-452c-ce14-08d925ee7fb8"
 function PressHandelerFollowMatch(id){
     fetch("https://localhost:5001/api/UserGames",{
         method: 'POST',
@@ -15,7 +15,6 @@ function PressHandelerFollowMatch(id){
             GameId: id
         })
     })
-    .then(response => response.json())
     .catch(error => console.log(error));
 }
 function PressHandelerFollowGame(id){
@@ -30,7 +29,6 @@ function PressHandelerFollowGame(id){
             GameTitleId: id
         })
     })
-    .then(response => response.json())
     .catch(error => console.log(error));
 }
 function PressHandelerFollowTeam(id){
@@ -45,12 +43,10 @@ function PressHandelerFollowTeam(id){
             TeamId: id
         })
     })
-    .then(response => response.json())
     .catch(error => console.log(error));
 }
 const _renderItemMatches = ({ item }) => {
-    const { PressHandelerMatches} = item;
-    console.log(item)
+    const { PressHandelerMatches,RefreshScreen} = item;
     return(
         <TouchableOpacity>
             <View style={styles.matchen} onPress={PressHandelerMatches}>
@@ -67,14 +63,15 @@ const _renderItemMatches = ({ item }) => {
                     <Text style={styles.matchenInfo}>{item.Naam}</Text>
                 </View>
                 
-                <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerFollowMatch(item.Id)}}/>
+                <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerFollowMatch(item.Id);RefreshScreen}}/>
             </View>
         </TouchableOpacity>
         
     )
 };
 const _renderItemGames = ({ item }) => {
-    
+    const { RefreshScreen} = item;
+
     return(
         <TouchableOpacity onPress={() => console.log('pres ')}>
             <View style={styles.Games} >
@@ -82,18 +79,18 @@ const _renderItemGames = ({ item }) => {
                     <Text style={styles.Naam}>{item.Naam}</Text>
                     <Text style={styles.Uitgever}>{item.Uitgever}</Text>
                 </View>
-                <Entypo  style={styles.HeartGame} name="heart" size={24} color="black" onPress={()=>{PressHandelerFollowGame(item.Id)}}/>
+                <Entypo  style={styles.HeartGame} name="heart" size={24} color="black" onPress={()=>{PressHandelerFollowGame(item.Id);RefreshScreen}}/>
             </View>
         </TouchableOpacity>
     )
 };
 const _renderItemTeams = ({ item }) => {
-    
+    const { RefreshScreen} = item;
     return(
         <TouchableOpacity onPress={() => console.log('pres ')}>
             <View style={styles.team} >
                 <Text style={styles.teamNaam}>{item.Naam}</Text>
-                <Entypo style={styles.HeartTeam} name="heart" size={24} color="black" onPress={()=>{PressHandelerFollowTeam(item.Id)}}/>
+                <Entypo style={styles.HeartTeam} name="heart" size={24} color="black" onPress={()=>{PressHandelerFollowTeam(item.Id);RefreshScreen}}/>
             </View>
         </TouchableOpacity>
     )
@@ -150,7 +147,11 @@ class ApiContainer extends Component {
             followedGames:[],
             followedTeams:[],
             followedMatchen:[],
+            lastRefresh: Date(Date.now()).toString(),
         };
+    }
+    RefreshScreen() {
+        this.setState({ lastRefresh: Date(Date.now()).toString() })
     }
     GetFollowedDataGames=()=>{
         this.setState({
@@ -184,6 +185,7 @@ class ApiContainer extends Component {
         fetch("https://localhost:5001/api/UserGames")
         .then(response => response.json())
         .then((responseJson) => {
+            console.log(responseJson)
             responseJson.UserGames.forEach(element => {
                 element.Datum = moment(element.Datum).format('MMM Do YYYY h:mm:ss a');
                 if(element.UserId == userId){
@@ -291,7 +293,7 @@ class ApiContainer extends Component {
                             keyExtractor={item => item.Id}
                             renderItem={_renderItemMatches}
                             FollowedMatchen = {this.state.followedMatchen}
-
+                            RefreshScreen = {this.RefreshScreen}
                         />
                     </SafeAreaView>
                 );
@@ -310,6 +312,8 @@ class ApiContainer extends Component {
                             renderItem={_renderItemTeams}
                             PressHandelerMatches={this.PressHandelerMatches}
                             FollowedTeams = {this.state.followedTeams}
+                            RefreshScreen = {this.RefreshScreen}
+
                         />
                     </SafeAreaView>
                 );
@@ -326,7 +330,7 @@ class ApiContainer extends Component {
                             keyExtractor={item => item.Id}
                             renderItem={_renderItemGames}
                             FollowedGames = {this.state.followedGames}
-
+                            RefreshScreen = {this.RefreshScreen}
                         />
                     </SafeAreaView>
                 );

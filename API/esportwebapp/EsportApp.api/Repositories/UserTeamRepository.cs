@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
 
 namespace EsportApp.api.Repositories
 {
@@ -79,22 +82,35 @@ namespace EsportApp.api.Repositories
 
         public async Task<GetUserTeamModel> PostUserTeam(PostUserTeamModel postUserTeamModel)
         {
-            try
+            if (await _context.UserTeams.FirstOrDefaultAsync(x => x.UserId == postUserTeamModel.UserId) == null && (await _context.UserTeams.FirstOrDefaultAsync(x => x.TeamId == postUserTeamModel.TeamId) == null))
             {
-                EntityEntry<UserTeam> result = await _context.UserTeams.AddAsync(new UserTeam
+                try
                 {
-                    UserId = postUserTeamModel.UserId,
-                    TeamId = postUserTeamModel.TeamId,
-                });
+                    EntityEntry<UserTeam> result = await _context.UserTeams.AddAsync(new UserTeam
+                    {
+                        UserId = postUserTeamModel.UserId,
+                        TeamId = postUserTeamModel.TeamId,
+                    });
 
-                await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
-                return await GetUserTeam(result.Entity.Id);
+                    return await GetUserTeam(result.Entity.Id);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.InnerException.Message + "PostUserTeam 400");
+                }
             }
-            catch (Exception e)
+            else
             {
-                throw new Exception(e.InnerException.Message + "PostUserTeam 400");
+                var resp = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent(string.Format("Dit team wordt al gevolgd ")),
+                    ReasonPhrase = "dit team wordt al gevolgd"
+                };
+                throw new HttpResponseException(resp);
             }
+            
         }
 
         public async Task DeleteUserTeam(Guid id)
@@ -117,7 +133,7 @@ namespace EsportApp.api.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception(""+e.InnerException.Message + this.GetType().Name + "DeleteUserTeam 400");
+                throw new Exception(""+e + this.GetType().Name + "DeleteUserTeam 400");
             }
         }
     }

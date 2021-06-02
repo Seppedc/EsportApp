@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using EsportApp.models.Games;
+using System.Net;
+using System.Web.Http;
+using System.Net.Http;
 
 namespace EsportApp.api.Repositories
 {
@@ -118,21 +121,35 @@ namespace EsportApp.api.Repositories
 
         public async Task<GetUserGameModel> PostUserGame(PostUserGameModel postUserGameModel)
         {
-            try
+            //bool hasUserId = await _context.UserGames.ContainsAsync(x => x.UserId == postUserGameModel.UserId);
+            if ((await _context.UserGames.FirstOrDefaultAsync(x => x.UserId == postUserGameModel.UserId)==null) && (await _context.UserGames.FirstOrDefaultAsync(x => x.GameId == postUserGameModel.GameId) == null))
             {
-                EntityEntry<UserGame> result = await _context.UserGames.AddAsync(new UserGame
+                try
                 {
-                    UserId = postUserGameModel.UserId,
-                    GameId = postUserGameModel.GameId,
-                });
+                    EntityEntry<UserGame> result = await _context.UserGames.AddAsync(new UserGame
+                    {
+                        UserId = postUserGameModel.UserId,
+                        GameId = postUserGameModel.GameId,
+                    });
 
-                await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
-                return await GetUserGame(result.Entity.Id);
+                    return await GetUserGame(result.Entity.Id);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.InnerException.Message + "PostUserGame 400");
+                }
             }
-            catch (Exception e)
+            else
             {
-                throw new Exception(e.InnerException.Message + "PostUserGame 400");
+                var resp = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent(string.Format("Deze match wordt al gevolgd ")),
+                    ReasonPhrase = "deze match wordt al gevolgd"
+                };
+                throw new HttpResponseException(resp);
+
             }
         }
 

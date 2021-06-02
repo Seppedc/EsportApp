@@ -3,7 +3,7 @@ import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar,ActivityIndic
 import { MaterialCommunityIcons, MaterialIcons,Entypo,FontAwesome    } from '@expo/vector-icons';
 import moment from "moment";
 
-const userId = "5e1a26d5-8677-4903-ea84-08d925b7d737"
+const userId = "84f9f434-16b3-452c-ce14-08d925ee7fb8"
 
 function PressHandelerUnFollowMatch(id){
     fetch("https://localhost:5001/api/UserGames/"+id,{
@@ -36,6 +36,7 @@ function PressHandelerUnFollowTeam(id){
     .catch(error => console.log(error));
 }
 const _renderItemMatches = ({ item }) => {
+    const { RefreshScreen} = item;
     if(item){
         console.log(item)
         return(
@@ -54,7 +55,7 @@ const _renderItemMatches = ({ item }) => {
                     <Text style={styles.matchenInfo}>{item.Naam}</Text>
                 </View>
                 
-                <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowMatch(item.UserGameId)}}/>
+                <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowMatch(item.UserGameId);RefreshScreen}}/>
             </View>
         </TouchableOpacity>
         )
@@ -64,6 +65,7 @@ const _renderItemMatches = ({ item }) => {
     
 };
 const _renderItemGames = ({ item }) => {
+    const { RefreshScreen} = item;
     if(item){
         return(
             <TouchableOpacity onPress={() => console.log('pres ')}>
@@ -71,7 +73,7 @@ const _renderItemGames = ({ item }) => {
                 <View style={styles.GamesGegevens}>
                     <Text style={styles.Naam}>{item.Naam}</Text>
                 </View>
-                <Entypo  style={styles.HeartGame} name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowGame(item.Id)}}/>
+                <Entypo  style={styles.HeartGame} name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowGame(item.Id);RefreshScreen}}/>
             </View>
         </TouchableOpacity>
         )
@@ -81,13 +83,14 @@ const _renderItemGames = ({ item }) => {
     
 };
 const _renderItemTeams = ({ item }) => {
+    const { RefreshScreen} = item;
     if(item){
         console.log(item)
         return(
             <TouchableOpacity onPress={() => console.log('pres ')}>
                 <View style={styles.team} >
                     <Text style={styles.teamNaam}>{item.Naam}</Text>
-                    <Entypo style={styles.HeartTeam} name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowTeam(item.Id)}}/>
+                    <Entypo style={styles.HeartTeam} name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowTeam(item.Id);RefreshScreen}}/>
                 </View>
             </TouchableOpacity>
         )
@@ -123,9 +126,13 @@ class ApiContainer extends Component {
             dataGames: [],
             dataTeams:[],
             dataMatchen:[],
-            currentSelected:""
+            currentSelected:"",
+            lastRefresh: Date(Date.now()).toString(),
 
         };
+    }
+    RefreshScreen() {
+        this.setState({ lastRefresh: Date(Date.now()).toString() })
     }
     GetMatch(GameId,id){
         fetch("https://localhost:5001/api/Games/"+GameId)
@@ -242,6 +249,7 @@ class ApiContainer extends Component {
                                 data={this.state.dataMatchen}
                                 keyExtractor={item => item.Id}
                                 renderItem={_renderItemMatches}
+                                RefreshScreen = {this.RefreshScreen}
                             />
                         </SafeAreaView>
                     );
@@ -270,7 +278,7 @@ class ApiContainer extends Component {
                                 keyExtractor={item => item.Id}
                                 renderItem={_renderItemTeams}
                                 PressHandelerMatches={this.PressHandelerMatches}
-    
+                                RefreshScreen = {this.RefreshScreen}
                             />
                         </SafeAreaView>
                     );
@@ -297,6 +305,7 @@ class ApiContainer extends Component {
                                 data={this.state.dataGames}
                                 keyExtractor={item => item.Id}
                                 renderItem={_renderItemGames}
+                                RefreshScreen = {this.RefreshScreen}
                             />
                         </SafeAreaView>
                     );

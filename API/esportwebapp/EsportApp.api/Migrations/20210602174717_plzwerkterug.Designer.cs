@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EsportApp.api.Migrations
 {
     [DbContext(typeof(EsportAppContext))]
-    [Migration("20210601164811_First")]
-    partial class First
+    [Migration("20210602174717_plzwerkterug")]
+    partial class plzwerkterug
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

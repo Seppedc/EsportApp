@@ -9,7 +9,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import GameScreen from '../Remove/Screens/game';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import AuthLoading from '../Remove/Screens/authloading';
-import SignIn from '../Remove/Screens/signin';
+//import Login from '../Login';
 import Settings from '../Remove/Screens/settings';
 import MatchDetails from '../MatchDetails'
 //stacked navivator
@@ -29,9 +29,9 @@ const AccountStack = createStackNavigator({
     Account: Account,
     Game: GameScreen
 });
-const AuthStack = createStackNavigator({
-    SignIn: SignIn
-});
+//const LoginStack = createStackNavigator({
+ //   Login: Login
+//});
 const SettingsStack = createStackNavigator({
     Settings: Settings
 });
@@ -75,7 +75,7 @@ const TabNavigator = createBottomTabNavigator({
 });
 const SwitchNavigator = createSwitchNavigator(
     {
-        //AuthLoading: AuthLoading,
+        //Login: Login,
         //Auth: AuthStack,
         App: TabNavigator,
         MatchDetails:MatchDetails,

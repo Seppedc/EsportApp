@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EsportApp.api.Migrations
 {
-    public partial class First : Migration
+    public partial class plzwerkterug : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
+using System.Net;
+using System.Web.Http;
 
 namespace EsportApp.api.Repositories
 {
@@ -84,22 +87,35 @@ namespace EsportApp.api.Repositories
 
         public async Task<GetUserGameTitleModel> PostUserGameTitle(PostUserGameTitleModel postUserGameTitleModel)
         {
-            try
+            if (await _context.UserGameTitles.FirstOrDefaultAsync(x => x.UserId == postUserGameTitleModel.UserId) == null && (await _context.UserGameTitles.FirstOrDefaultAsync(x => x.GameTitleId == postUserGameTitleModel.GameTitleId) == null))
             {
-                EntityEntry<UserGameTitle> result = await _context.UserGameTitles.AddAsync(new UserGameTitle
+                try
                 {
-                    UserId = postUserGameTitleModel.UserId,
-                    GameTitleId = postUserGameTitleModel.GameTitleId,
-                });
+                    EntityEntry<UserGameTitle> result = await _context.UserGameTitles.AddAsync(new UserGameTitle
+                    {
+                        UserId = postUserGameTitleModel.UserId,
+                        GameTitleId = postUserGameTitleModel.GameTitleId,
+                    });
 
-                await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
-                return await GetUserGameTitle(result.Entity.Id);
+                    return await GetUserGameTitle(result.Entity.Id);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.InnerException.Message + "PostUserGameTitle 400");
+                }
             }
-            catch (Exception e)
+            else
             {
-                throw new Exception(e.InnerException.Message + "PostUserGameTitle 400");
+                var resp = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent(string.Format("Deze game wordt al gevolgd ")),
+                    ReasonPhrase = "deze game wordt al gevolgd"
+                };
+                throw new HttpResponseException(resp);
             }
+            
         }
 
         public async Task DeleteUserGameTitle(Guid id)
@@ -122,7 +138,7 @@ namespace EsportApp.api.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception(""+e.InnerException.Message + this.GetType().Name + "DeleteUserGameTitle 400");
+                throw new Exception(""+e + this.GetType().Name + "DeleteUserGameTitle 400");
             }
         }
     }

@@ -152,3 +152,7 @@ C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp
 C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.api\obj\Debug\netcoreapp5.0\ref\EsportApp.api.dll
 C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.api\obj\Debug\netcoreapp5.0\EsportApp.api.pdb
 C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.api\obj\Debug\netcoreapp5.0\EsportApp.api.genruntimeconfig.cache
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.api\bin\Debug\netcoreapp5.0\System.Net.Http.Formatting.dll
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.api\bin\Debug\netcoreapp5.0\System.Web.Http.dll
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.api\bin\Debug\netcoreapp5.0\Newtonsoft.Json.dll
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.api\bin\Debug\netcoreapp5.0\Newtonsoft.Json.Bson.dll

@@ -19,7 +19,7 @@ namespace EsportApp.api.Data
             // Delete existing database and create new database with default test data
             // =======================================================================
 
-            
+
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
 
@@ -57,7 +57,7 @@ namespace EsportApp.api.Data
                 Familienaam = "helper",
                 Email = "siebe@helper.be",
                 Punten = 1,
-                UserName= "siebe@helper.be",
+                UserName = "siebe@helper.be",
             };
 
             _ = _userManager.CreateAsync(user1, "_Azerty123").Result;
@@ -85,12 +85,13 @@ namespace EsportApp.api.Data
 
             // Create Tornooien
             // ============
-            Tornooi tornooia = new Tornooi {
+            Tornooi tornooia = new Tornooi
+            {
                 Naam = "Worlds",
                 Organisator = "Riot",
                 Beschrijving = "Wk van league of legends",
-                GameTitleId=lol.Id,
-                Type="",
+                GameTitleId = lol.Id,
+                Type = "",
             };
             _context.Tornooien.Add(tornooia);
             Tornooi tornooib = new Tornooi
@@ -98,7 +99,7 @@ namespace EsportApp.api.Data
                 Naam = "ESL One Cologne 2021",
                 Organisator = "ESL",
                 Beschrijving = "ESL Pro Tour Championship",
-                GameTitleId =csgo.Id,
+                GameTitleId = csgo.Id,
                 Type = "",
             };
             _context.Tornooien.Add(tornooib);
@@ -108,7 +109,7 @@ namespace EsportApp.api.Data
                 Naam = "LA THIEVES HOME SERIES",
                 Organisator = "Activision",
                 Beschrijving = "Stage IV week 3",
-                GameTitleId =cod.Id,
+                GameTitleId = cod.Id,
                 Type = "",
             };
             _context.Tornooien.Add(tornooic);
