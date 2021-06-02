@@ -10,3 +10,15 @@ C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\esportwebapp\EsportApp.mod
 C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\esportwebapp\EsportApp.models\obj\Debug\net5.0\EsportApp.models.dll
 C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\esportwebapp\EsportApp.models\obj\Debug\net5.0\ref\EsportApp.models.dll
 C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\esportwebapp\EsportApp.models\obj\Debug\net5.0\EsportApp.models.pdb
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\bin\Debug\net5.0\EsportApp.models.deps.json
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\bin\Debug\net5.0\EsportApp.models.dll
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\bin\Debug\net5.0\ref\EsportApp.models.dll
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\bin\Debug\net5.0\EsportApp.models.pdb
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\obj\Debug\net5.0\EsportApp.models.csprojAssemblyReference.cache
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\obj\Debug\net5.0\EsportApp.models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\obj\Debug\net5.0\EsportApp.models.AssemblyInfoInputs.cache
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\obj\Debug\net5.0\EsportApp.models.AssemblyInfo.cs
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\obj\Debug\net5.0\EsportApp.models.csproj.CoreCompileInputs.cache
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\obj\Debug\net5.0\EsportApp.models.dll
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\obj\Debug\net5.0\ref\EsportApp.models.dll
+C:\Users\Seppe\OneDrive - ODISEE\Jaar3\Sem2\EsportApp\API\esportwebapp\EsportApp.models\obj\Debug\net5.0\EsportApp.models.pdb

@@ -1,43 +1,91 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar,ActivityIndicator,Button,Alert,TouchableOpacity  } from 'react-native';
+import { MaterialCommunityIcons, MaterialIcons,Entypo,FontAwesome    } from '@expo/vector-icons';
 
+const userId = "5e1a26d5-8677-4903-ea84-08d925b7d737"
 
+function PressHandelerUnFollowMatch(id){
+    fetch("https://localhost:5001/api/UserGames/"+id,{
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+    })
+    .catch(error => console.log(error));
+}
+function PressHandelerUnFollowGame(id){
+    fetch("https://localhost:5001/api/UserGameTitles/"+id,{
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+    })
+    .catch(error => console.log(error));
+}
+function PressHandelerUnFollowTeam(id){
+    fetch("https://localhost:5001/api/UserTeams/"+id,{
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+    })
+    .catch(error => console.log(error));
+}
 const _renderItemMatches = ({ item }) => {
-    console.log(item)
-    return(
-        <TouchableOpacity>
-            <View style={styles.item} onPress={() => console.log('pres ')}>
+    if(item){
+        console.log(item)
+        return(
+            <TouchableOpacity>
+                <View style={styles.item} onPress={() => console.log('pres ')}>
                 <Text>{item.Datum}</Text>
-                <Text>{item.Teams[0]}</Text>
-                <Text>{item.Teams[1]}</Text>
-                <Text>{item.Tornooi}</Text>
-                <Text>{item.GameTitle}</Text>
-                <Text>{item.Score}0 : 0</Text>
-            </View>
-        </TouchableOpacity>
-        
-    )
+                    <Text>{item.Teams[0]}</Text>
+                    <Text>{item.Teams[1]}</Text>
+                    <Text>{item.Tornooi}</Text>
+                    <Text>{item.GameTitle}</Text>
+                    <Text>{item.Score}0 : 0</Text>
+                    <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowMatch(item.UserGameId)}}/>
+                </View>
+            </TouchableOpacity>
+        )
+    }else{
+        return(<Text>Nog geen gevolgde matchen</Text>)
+    }
+    
 };
 const _renderItemGames = ({ item }) => {
+    if(item){
+        return(
+            <TouchableOpacity onPress={() => console.log('pres ')}>
+                <View style={styles.item} >
+                    <Text>{item.Naam}</Text>
+                    <Text>{item.Uitgever}</Text>
+                    <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowGame(item.Id)}}/>
+                </View>
+            </TouchableOpacity>
+        )
+    }else{
+        return(<Text>Nog geen gevolgde games</Text>)
+    }
     
-    return(
-        <TouchableOpacity onPress={() => console.log('pres ')}>
-            <View style={styles.item} >
-                <Text>{item.Naam}</Text>
-                <Text>{item.Uitgever}</Text>
-            </View>
-        </TouchableOpacity>
-    )
 };
 const _renderItemTeams = ({ item }) => {
+    if(item){
+        console.log(item)
+        return(
+            <TouchableOpacity onPress={() => console.log('pres ')}>
+                <View style={styles.item} >
+                    <Text>{item.Naam}</Text>
+                    <Entypo name="heart" size={24} color="black" onPress={()=>{PressHandelerUnFollowTeam(item.Id)}}/>
+                </View>
+            </TouchableOpacity>
+        )
+    }else{
+        return(<Text>Nog geen gevolgde teams</Text>)
+    }
     
-    return(
-        <TouchableOpacity onPress={() => console.log('pres ')}>
-            <View style={styles.item} >
-                <Text>{item.Naam}</Text>
-            </View>
-        </TouchableOpacity>
-    )
 };
 const AllButtons = ( props ) => {
     const { GetDataMatchen,GetDataTeams,GetDataGames } = props;
@@ -46,15 +94,15 @@ const AllButtons = ( props ) => {
             <Button
                 title="Matchen"
                 onPress={GetDataMatchen}
-                />
-                <Button
+            />
+            <Button
                 title="Games"
                 onPress={GetDataGames}
-                />
+            />
             <Button
                 title="Teams"
                 onPress={GetDataTeams}
-                />
+            />
         </View>
     )
 };
@@ -67,54 +115,83 @@ class ApiContainer extends Component {
             dataTeams:[],
             dataMatchen:[],
             currentSelected:""
+
         };
     }
+    GetMatch(GameId,id){
+        fetch("https://localhost:5001/api/Games/"+GameId)
+        .then(response => response.json())
+        .then((responseJson) => {
+            var test = responseJson;
+            test["UserGameId"] = id;
+            var joined = this.state.dataMatchen.concat(test);
+            this.setState({ dataMatchen: joined })
+        })
+        .catch(error => console.log(error))
+    };
     GetDataMatchen = () => {
-        console.log('in')
         this.setState({
             loading: true,
+            dataMatchen:[],
         })
-        fetch("https://localhost:5001/api/UserGames")
+        fetch("https://localhost:5001/api/UserGames/"+ userId +"/User")
             .then(response => response.json())
             .then((responseJson) => {
-                console.log('getting data from fetch', responseJson)
+                responseJson.UserGames.forEach(element => {
+                    this.GetMatch(element.GameId,element.Id);
+                });
                 this.setState({
                     loading: false,
-                    dataMatchen: responseJson,
                     currentSelected:"Matchen"
                 })
             })
             .catch(error => console.log(error))
     }
+    GetTeam(UserTeamId){
+        fetch("https://localhost:5001/api/UserTeams/"+UserTeamId)
+        .then(response => response.json())
+        .then((responseJson) => {
+            var joined = this.state.dataTeams.concat(responseJson);
+            this.setState({ dataTeams: joined })
+        })
+        .catch(error => console.log(error))
+    };
     GetDataTeams = () => {
-        console.log('in')
         this.setState({
             loading: true,
+            dataTeams:[],
         })
-        fetch("https://localhost:5001/api/Teams")
+        fetch("https://localhost:5001/api/UserTeams")
             .then(response => response.json())
             .then((responseJson) => {
-                console.log('getting data from fetch', responseJson)
+                responseJson.UserTeams.forEach(element => {
+                    if(element.UserId == userId){
+                        this.GetTeam(element.Id);
+                    }
+                });
                 this.setState({
                     loading: false,
-                    dataTeams: responseJson,
                     currentSelected:"Teams"
                 })
             })
             .catch(error => console.log(error))
     }
     GetDataGames = () => {
-        console.log('in')
         this.setState({
             loading: true,
+            dataGames:[],
         })
-        fetch("https://localhost:5001/api/GameTitles")
+        fetch("https://localhost:5001/api/UserGameTitles")
             .then(response => response.json())
             .then((responseJson) => {
-                console.log('getting data from fetch', responseJson)
+                responseJson.UserGameTitles.forEach(element => {
+                    if(element.UserId == userId){
+                        var joined = this.state.dataGames.concat(element);
+                        this.setState({ dataGames: joined })
+                    }
+                });
                 this.setState({
                     loading: false,
-                    dataGames: responseJson,
                     currentSelected:"Games"
                 })
             })
@@ -130,53 +207,89 @@ class ApiContainer extends Component {
             );
         }else{
             if(this.state.currentSelected=="Matchen"){
-                return (
-                    <SafeAreaView style={styles.container}>
-                        <AllButtons GetDataMatchen={this.GetDataMatchen}
-                                    GetDataTeams={this.GetDataTeams}
-                                    GetDataGames={this.GetDataGames}
-                                    GetDataTornooien={this.GetDataTornooien}
-                        ></AllButtons>
-                        <FlatList
-                            data={this.state.dataMatchen.UserGames}
-                            keyExtractor={item => item.Id}
-                            renderItem={_renderItemMatches}
-                        />
-                    </SafeAreaView>
-                );
-            }else if(this.state.currentSelected=="Teams"){console.log(this.state.dataTeams);
-                return (
-                    
-                    <SafeAreaView style={styles.container}>
-                        <AllButtons GetDataMatchen={this.GetDataMatchen}
-                                    GetDataTeams={this.GetDataTeams}
-                                    GetDataGames={this.GetDataGames}
-                                    GetDataTornooien={this.GetDataTornooien}
-                        ></AllButtons>
-                        <FlatList
-                            data={this.state.dataTeams.Teams}
-                            keyExtractor={item => item.Id}
-                            renderItem={_renderItemTeams}
-                            PressHandelerMatches={this.PressHandelerMatches}
+                if(this.state.dataMatchen.length==0){
+                    console.log('no',this.state.dataMatchen)
+                    return(
+                        <View>
+                            <AllButtons GetDataMatchen={this.GetDataMatchen}
+                                        GetDataTeams={this.GetDataTeams}
+                                        GetDataGames={this.GetDataGames}
+                            ></AllButtons>
+                            <Text>Nog geen gevolgde Matchen</Text> 
+                        </View> 
+                    )
+                }else{
+                    console.log('yes',this.state.dataMatchen)
 
-                        />
-                    </SafeAreaView>
-                );
+                    return (
+                        <SafeAreaView style={styles.container}>
+                            <AllButtons GetDataMatchen={this.GetDataMatchen}
+                                        GetDataTeams={this.GetDataTeams}
+                                        GetDataGames={this.GetDataGames}
+                            ></AllButtons>
+                            <FlatList
+                                data={this.state.dataMatchen}
+                                keyExtractor={item => item.Id}
+                                renderItem={_renderItemMatches}
+                            />
+                        </SafeAreaView>
+                    );
+                }
+            }else if(this.state.currentSelected=="Teams"){
+                console.log(this.state.dataTeams)
+                if(this.state.dataTeams.length==0){
+                    return(
+                        <View>
+                            <AllButtons GetDataMatchen={this.GetDataMatchen}
+                                        GetDataTeams={this.GetDataTeams}
+                                        GetDataGames={this.GetDataGames}
+                            ></AllButtons>
+                            <Text>Nog geen gevolgde Teams</Text> 
+                        </View> 
+                    )              
+                }else{
+                    return (
+                        <SafeAreaView style={styles.container}>
+                            <AllButtons GetDataMatchen={this.GetDataMatchen}
+                                        GetDataTeams={this.GetDataTeams}
+                                        GetDataGames={this.GetDataGames}
+                            ></AllButtons>
+                            <FlatList
+                                data={this.state.dataTeams}
+                                keyExtractor={item => item.Id}
+                                renderItem={_renderItemTeams}
+                                PressHandelerMatches={this.PressHandelerMatches}
+    
+                            />
+                        </SafeAreaView>
+                    );
+                }
             }else{
-                return (
-                    <SafeAreaView style={styles.container}>
-                        <AllButtons GetDataMatchen={this.GetDataMatchen}
-                                    GetDataTeams={this.GetDataTeams}
-                                    GetDataGames={this.GetDataGames}
-                                    GetDataTornooien={this.GetDataTornooien}
-                        ></AllButtons>
-                        <FlatList
-                            data={this.state.dataGames.GameTitles}
-                            keyExtractor={item => item.Id}
-                            renderItem={_renderItemGames}
-                        />
-                    </SafeAreaView>
-                );
+                if(this.state.dataGames.length==0){
+                    return(
+                        <View>
+                            <AllButtons GetDataMatchen={this.GetDataMatchen}
+                                        GetDataTeams={this.GetDataTeams}
+                                        GetDataGames={this.GetDataGames}
+                            ></AllButtons>
+                            <Text>Nog geen gevolgde Games</Text> 
+                        </View> 
+                    )
+                }else{
+                    return (
+                        <SafeAreaView style={styles.container}>
+                            <AllButtons GetDataMatchen={this.GetDataMatchen}
+                                        GetDataTeams={this.GetDataTeams}
+                                        GetDataGames={this.GetDataGames}
+                            ></AllButtons>
+                            <FlatList
+                                data={this.state.dataGames}
+                                keyExtractor={item => item.Id}
+                                renderItem={_renderItemGames}
+                            />
+                        </SafeAreaView>
+                    );
+                }
             }
         }
     }
@@ -189,7 +302,7 @@ const styles = StyleSheet.create({
       marginTop: StatusBar.currentHeight || 0,
     },
     item: {
-      backgroundColor: '#f9c2ff',
+      backgroundColor: 'lightgrey',
       padding: 20,
       marginVertical: 8,
       marginHorizontal: 16,

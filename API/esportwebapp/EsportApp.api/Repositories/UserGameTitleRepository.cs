@@ -3,9 +3,9 @@ using EsportApp.models.UserGameTitles;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace EsportApp.api.Repositories
 {
@@ -23,12 +23,15 @@ namespace EsportApp.api.Repositories
             try
             {
                 List<GetUserGameTitleModel> userGameTitles = await _context.UserGameTitles
+                    .Include(x=> x.GameTitle)
                     .OrderBy(x => x.Id)
                     .Select(x => new GetUserGameTitleModel
                     {
                         Id = x.Id,
                         UserId = x.UserId,
                         GameTitleId = x.GameTitleId,
+                        Naam = x.GameTitle.Naam,
+
                     })
                     .AsNoTracking()
                     .ToListAsync();
@@ -45,7 +48,7 @@ namespace EsportApp.api.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception(e.InnerException.Message);
+                throw new Exception(""+e);
             }
         }
 
@@ -54,12 +57,14 @@ namespace EsportApp.api.Repositories
             try
             {
                 GetUserGameTitleModel userGameTitle = await _context.UserGameTitles
+                    .Include(x => x.GameTitle)
                     .OrderBy(x => x.Id)
                     .Select(x => new GetUserGameTitleModel
                     {
                         Id = x.Id,
                         UserId = x.UserId,
                         GameTitleId = x.GameTitleId,
+                        Naam = x.GameTitle.Naam,
                     })
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == id);
@@ -117,7 +122,7 @@ namespace EsportApp.api.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception(e.InnerException.Message + this.GetType().Name + "DeleteUserGameTitle 400");
+                throw new Exception(""+e.InnerException.Message + this.GetType().Name + "DeleteUserGameTitle 400");
             }
         }
     }

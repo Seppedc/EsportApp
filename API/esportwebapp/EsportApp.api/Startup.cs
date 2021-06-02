@@ -19,6 +19,8 @@ namespace EsportApp.api
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,6 +37,17 @@ namespace EsportApp.api
             // Identity configuration
             services.AddIdentity<User, Role>().AddEntityFrameworkStores<EsportAppContext>();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.AllowAnyOrigin()
+                                      //builder.WithOrigins("https://localhost:19006", "https://localhost:5001")
+                                          .AllowAnyHeader()
+                                          .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE");
+                                  });
+            });
 
             services.AddControllers().AddJsonOptions(options =>
             {
@@ -110,6 +123,7 @@ namespace EsportApp.api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 

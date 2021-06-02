@@ -12,6 +12,7 @@ namespace EsportApp.models.UserGameTitles
 
         public Guid UserId { get; set; }
         public string User { get; set; }
+        public string Naam { get; set; }
 
         public Guid GameTitleId { get; set; }
         public string GameTitle { get; set; }

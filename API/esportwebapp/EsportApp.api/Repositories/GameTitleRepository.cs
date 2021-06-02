@@ -45,7 +45,7 @@ namespace EsportApp.api.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception(e.InnerException.Message);
+                throw new Exception(""+e);
             }
         }
 

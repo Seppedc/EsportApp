@@ -77,26 +77,24 @@ namespace EsportApp.api.Repositories
                         Datum = (DateTime)x.Datum,
                         Status = x.Status,
                         Type = x.Type,
+                        Tornooi = x.Tornooi.Naam,
                         TeamGames = x.TeamGames.Select(y => new GetTeamGameModel
                         {
                             Id = y.Id,
                             TeamId = y.TeamId,
                             GameId = y.GameId
                         }).ToList(),
+                        Teams = x.TeamGames.Select(y => y.Team.Naam).ToList(),
+
                     })
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == id);
-
-                if (game == null)
-                {
-                    throw new Exception("Game niet gevonden GetGame 404");
-                }
 
                 return game;
             }
             catch (Exception e)
             {
-                throw new Exception(e.InnerException.Message);
+                throw new Exception(""+e);
             }
         }
 

@@ -19,5 +19,6 @@ namespace EsportApp.models.Games
         public ICollection<GetUserGameModel> UserGames { get; set; }
         public ICollection<GetTeamGameModel> TeamGames { get; set; }
 
+
     }
 }

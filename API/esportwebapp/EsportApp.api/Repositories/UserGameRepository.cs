@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using EsportApp.models.Games;
 
 namespace EsportApp.api.Repositories
 {
@@ -23,12 +24,15 @@ namespace EsportApp.api.Repositories
             try
             {
                 List<GetUserGameModel> userGames = await _context.UserGames
+                    .Include(x => x.Game)
                     .OrderBy(x => x.Id)
                     .Select(x => new GetUserGameModel
                     {
                         Id = x.Id,
                         UserId = x.UserId,
                         GameId = x.GameId,
+                        //Teams = x.TeamGames.Select(y => y.Team.Naam).ToList(),
+
                     })
                     .AsNoTracking()
                     .ToListAsync();
@@ -46,6 +50,41 @@ namespace EsportApp.api.Repositories
             catch (Exception e)
             {
                 throw new Exception(""+e);
+            }
+        }
+        public async Task<GetUserGamesModel> GetUserGames(Guid id)
+        {
+            try
+            {
+                List<GetUserGameModel> userGames = await _context.UserGames
+                    .Include(x =>x.Game)
+                    .Where(x => x.UserId == id)
+                    .OrderBy(x => x.Id)
+                    .Select(x => new GetUserGameModel
+                    {
+                        Id = x.Id,
+                        UserId = x.UserId,
+                        GameId = x.GameId,
+                        Score = x.Game.Score,
+                        Status = x.Game.Status,
+                        Type = x.Game.Type,
+                    })
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                if (userGames.Count == 0)
+                {
+                    userGames = new List<GetUserGameModel>();
+                }
+                GetUserGamesModel getUserGamesModel = new GetUserGamesModel
+                {
+                    UserGames = userGames
+                };
+                return getUserGamesModel;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("" + e);
             }
         }
 
@@ -73,7 +112,7 @@ namespace EsportApp.api.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception(e.InnerException.Message);
+                throw new Exception(""+e);
             }
         }
 
@@ -117,7 +156,7 @@ namespace EsportApp.api.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception(e.InnerException.Message + this.GetType().Name + "DeleteUserGame 400");
+                throw new Exception(""+e+ this.GetType().Name + "DeleteUserGame 400");
             }
         }
     }

@@ -12,7 +12,7 @@ namespace EsportApp.models.UserTeams
 
         public Guid UserId { get; set; }
         public string User { get; set; }
-
+        public string Naam { get; set; }
         public Guid TeamId { get; set; }
         public string Team { get; set; }
     }

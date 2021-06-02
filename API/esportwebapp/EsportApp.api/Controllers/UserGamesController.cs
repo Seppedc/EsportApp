@@ -47,7 +47,44 @@ namespace EsportApp.api.Controllers
         {
             return await _userGameRepository.GetUserGames();
         }
+        /// <summary>
+        /// Get a list of all usergames for a user.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/userGames/{id}/user
+        ///
+        /// </remarks>
+        /// <param name="id"></param>     
+        /// <returns>List GetReservatieModel</returns>
+        /// <response code="200">Returns the list of reservaties</response>
+        /// <response code="401">Unauthorized - Invalid JWT token</response> 
+        /// <response code="403">Forbidden - Required role assignment is missing</response> 
+        [HttpGet("{id}/User")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[Authorize(Roles = "Leerling")]
+        [AllowAnonymous]
+        public async Task<ActionResult<GetUserGamesModel>> GetUserGames(string id)
+        {
+            try
+            {
+                if (!Guid.TryParse(id, out Guid userId))
+                {
+                    throw new Exception("Ongeldig id" + this.GetType().Name + "GetUserGame" + "400");
+                }
 
+                GetUserGamesModel userGames = await _userGameRepository.GetUserGames(userId);
+
+                return userGames;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("" + e);
+            }
+        }
         /// <summary>
         /// Get details of an UserGame.
         /// </summary>

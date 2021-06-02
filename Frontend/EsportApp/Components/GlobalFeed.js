@@ -104,7 +104,10 @@ const AllButtons = ( props ) => {
     const { GetDataMatchen,GetDataTeams,GetDataGames,GetDataTornooien } = props;
     return(
         <View style={styles.buttons}>
-            <Button style={styles.button}
+            <Button style={{
+                height:5,
+                with:5
+            }}
                 title="Matchen"
                 onPress={GetDataMatchen}
                 />

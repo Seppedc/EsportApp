@@ -3,9 +3,9 @@ using EsportApp.models.UserTeams;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace EsportApp.api.Repositories
 {
@@ -23,12 +23,14 @@ namespace EsportApp.api.Repositories
             try
             {
                 List<GetUserTeamModel> userTeams = await _context.UserTeams
+                    .Include(x=>x.Team)
                     .OrderBy(x => x.Id)
                     .Select(x => new GetUserTeamModel
                     {
                         Id = x.Id,
                         UserId = x.UserId,
                         TeamId = x.TeamId,
+                        Naam = x.Team.Naam,
                     })
                     .AsNoTracking()
                     .ToListAsync();
@@ -45,7 +47,7 @@ namespace EsportApp.api.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception(e.InnerException.Message);
+                throw new Exception(""+e);
             }
         }
 
@@ -54,26 +56,24 @@ namespace EsportApp.api.Repositories
             try
             {
                 GetUserTeamModel userTeam = await _context.UserTeams
+                    .Include(x => x.Team)
                     .OrderBy(x => x.Id)
                     .Select(x => new GetUserTeamModel
                     {
                         Id = x.Id,
                         UserId = x.UserId,
                         TeamId = x.TeamId,
+                        Naam = x.Team.Naam,
                     })
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == id);
 
-                if (userTeam == null)
-                {
-                    throw new Exception("UserTeam niet gevonden GetUserTeam 404");
-                }
-
+                
                 return userTeam;
             }
             catch (Exception e)
             {
-                throw new Exception(e.InnerException.Message);
+                throw new Exception(""+e);
             }
         }
 
@@ -117,7 +117,7 @@ namespace EsportApp.api.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception(e.InnerException.Message + this.GetType().Name + "DeleteUserTeam 400");
+                throw new Exception(""+e.InnerException.Message + this.GetType().Name + "DeleteUserTeam 400");
             }
         }
     }
