@@ -3,9 +3,11 @@ using EsportApp.models.Teams;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+
+
+using Microsoft.EntityFrameworkCore;
 
 namespace EsportApp.api.Repositories
 {
@@ -44,7 +46,7 @@ namespace EsportApp.api.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception(e.InnerException.Message);
+                throw new Exception(""+e);
             }
         }
 

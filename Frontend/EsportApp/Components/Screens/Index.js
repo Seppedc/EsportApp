@@ -6,12 +6,12 @@ import Account from '../Screens/Account';
 import Search from '../Screens/Search';
 import { MaterialCommunityIcons, MaterialIcons,Entypo,FontAwesome    } from '@expo/vector-icons';
 import { createStackNavigator } from 'react-navigation-stack';
-import GameScreen from './game';
+import GameScreen from '../Remove/Screens/game';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import AuthLoading from './authloading';
-import SignIn from './signin';
-import Settings from './settings';
-
+import AuthLoading from '../Remove/Screens/authloading';
+import SignIn from '../Remove/Screens/signin';
+import Settings from '../Remove/Screens/settings';
+import MatchDetails from '../MatchDetails'
 //stacked navivator
 const FeedStack = createStackNavigator({
     Feed: Feed,
@@ -75,13 +75,14 @@ const TabNavigator = createBottomTabNavigator({
 });
 const SwitchNavigator = createSwitchNavigator(
     {
-        AuthLoading: AuthLoading,
-        Auth: AuthStack,
-        App: TabNavigator
+        //AuthLoading: AuthLoading,
+        //Auth: AuthStack,
+        App: TabNavigator,
+        MatchDetails:MatchDetails,
     },
     {
-        initialRouteName: 'AuthLoading'
+        //initialRouteName: 'AuthLoading'
     }
 );
-export default createAppContainer(TabNavigator);
-//export default createAppContainer(SwitchNavigator);
+//export default createAppContainer(TabNavigator);
+export default createAppContainer(SwitchNavigator);

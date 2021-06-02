@@ -4091,7 +4091,7 @@
   "resolved" "https://registry.npmjs.org/jetifier/-/jetifier-1.6.8.tgz"
   "version" "1.6.8"
 
-"jimp@0.12.1":
+"jimp@^0.12.1", "jimp@0.12.1":
   "integrity" "sha512-0soPJif+yjmzmOF+4cF2hyhxUWWpXpQntsm2joJXFFoRcQiPzsG4dbLKYqYPT3Fc6PjZ8MaLtCkDqqckVSfmRw=="
   "resolved" "https://registry.npmjs.org/jimp/-/jimp-0.12.1.tgz"
   "version" "0.12.1"

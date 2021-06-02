@@ -4,10 +4,9 @@ import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar,ActivityIndic
 
 const _renderItemMatches = ({ item }) => {
     console.log(item)
-    const { PressHandelerMatches } = item;
     return(
         <TouchableOpacity>
-            <View style={styles.item} onPress={PressHandelerMatches}>
+            <View style={styles.item} onPress={() => console.log('pres ')}>
                 <Text>{item.Datum}</Text>
                 <Text>{item.Teams[0]}</Text>
                 <Text>{item.Teams[1]}</Text>
@@ -40,20 +39,8 @@ const _renderItemTeams = ({ item }) => {
         </TouchableOpacity>
     )
 };
-const _renderItemTornooien = ({ item }) => {
-    
-    return(
-        <TouchableOpacity onPress={() => console.log('pres ')}>
-            <View style={styles.item} >
-                <Text>{item.Naam}</Text>
-                <Text>{item.Organisator}</Text>
-                <Text>{item.Beschrijving}</Text>
-            </View>
-        </TouchableOpacity>
-    )
-};
 const AllButtons = ( props ) => {
-    const { GetDataMatchen,GetDataTeams,GetDataGames,GetDataTornooien } = props;
+    const { GetDataMatchen,GetDataTeams,GetDataGames } = props;
     return(
         <View style={styles.item}>
             <Button
@@ -68,18 +55,9 @@ const AllButtons = ( props ) => {
                 title="Teams"
                 onPress={GetDataTeams}
                 />
-            <Button
-                title="Tornooien"
-                onPress={GetDataTornooien}
-                />
         </View>
     )
 };
-const Teams = ({ teams }) => (
-    <View style={styles.item}>
-      <Text style={styles.tornooi}>{Tornooi}</Text>
-    </View>
-);
 class ApiContainer extends Component {
     constructor(props) {
         super(props);
@@ -88,7 +66,6 @@ class ApiContainer extends Component {
             dataGames: [],
             dataTeams:[],
             dataMatchen:[],
-            dataTornooien:[],
             currentSelected:""
         };
     }
@@ -97,7 +74,7 @@ class ApiContainer extends Component {
         this.setState({
             loading: true,
         })
-        fetch("https://localhost:5001/api/Games")
+        fetch("https://localhost:5001/api/UserGames")
             .then(response => response.json())
             .then((responseJson) => {
                 console.log('getting data from fetch', responseJson)
@@ -143,28 +120,6 @@ class ApiContainer extends Component {
             })
             .catch(error => console.log(error))
     }
-    GetDataTornooien = () => {
-        console.log('in')
-        this.setState({
-            loading: true,
-        })
-        fetch("https://localhost:5001/api/Tornooien")
-            .then(response => response.json())
-            .then((responseJson) => {
-                console.log('getting data from fetch', responseJson)
-                this.setState({
-                    loading: false,
-                    dataTornooien: responseJson,
-                    currentSelected:"Tornooien"
-
-                })
-            })
-            .catch(error => console.log(error))
-    }
-    PressHandelerMatches=()=>{
-        console.log('ins')
-        this.props.navigation.navigate('MatchDetails');
-    }
     componentDidMount(){
         this.GetDataMatchen();
     }
@@ -183,7 +138,7 @@ class ApiContainer extends Component {
                                     GetDataTornooien={this.GetDataTornooien}
                         ></AllButtons>
                         <FlatList
-                            data={this.state.dataMatchen.Games}
+                            data={this.state.dataMatchen.UserGames}
                             keyExtractor={item => item.Id}
                             renderItem={_renderItemMatches}
                         />
@@ -207,7 +162,7 @@ class ApiContainer extends Component {
                         />
                     </SafeAreaView>
                 );
-            }else if(this.state.currentSelected=="Games"){
+            }else{
                 return (
                     <SafeAreaView style={styles.container}>
                         <AllButtons GetDataMatchen={this.GetDataMatchen}
@@ -222,24 +177,7 @@ class ApiContainer extends Component {
                         />
                     </SafeAreaView>
                 );
-            }else{
-                return (
-                    <SafeAreaView style={styles.container}>
-                        <AllButtons GetDataMatchen={this.GetDataMatchen}
-                                    GetDataTeams={this.GetDataTeams}
-                                    GetDataGames={this.GetDataGames}
-                                    GetDataTornooien={this.GetDataTornooien}
-                        ></AllButtons>
-                        <FlatList
-                            data={this.state.dataTornooien.Tornooien}
-                            keyExtractor={item => item.Id}
-                            renderItem={_renderItemTornooien}
-                        />
-                    </SafeAreaView>
-                );
             }
-
-            
         }
     }
 }

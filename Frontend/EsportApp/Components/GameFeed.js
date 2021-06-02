@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { FlatList, View, Text, TouchableOpacity } from 'react-native';
-import Game from './Game';
+import Game from '../Components/Remove/Game';
 
 const games = [
     { id: 0, title: 'JavaScript & JQuery: Web Development' },
